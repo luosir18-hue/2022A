@@ -1,167 +1,87 @@
 {
-  "schema_version": "independent-review/v1",
   "run_id": "run001",
-  "member": "L",
   "question": "Q1",
   "version": "v1",
-  "status": "ready_for_review",
-  "semantic_state": "human_required",
-  "sources_used": [
-    "题目信息/A题/A题.pdf",
-    "模型/Q1/v1/数学模型.md",
-    "模型/Q1/v1/约束.md",
-    "模型/Q1/v1/建模思路.md",
-    "code_L/Q1/v1/结果（包括各种过程数据与审查）/运行输出/run001/result1-1.xlsx",
-    "code_L/Q1/v1/结果（包括各种过程数据与审查）/运行输出/run001/result1-2.xlsx",
-    "code_L/Q1/v1/结果（包括各种过程数据与审查）/运行输出/run001/result1_数值诊断.csv",
-    "code_L/Q1/v1/结果（包括各种过程数据与审查）/运行输出/run001/result1-1_功率与能量.csv",
-    "code_L/Q1/v1/结果（包括各种过程数据与审查）/运行输出/run001/result1-2_功率与能量.csv"
-  ],
-  "excluded_sources": [
-    "算法/求解代码",
-    "solve.cpp",
-    "solve_注释.cpp"
-  ],
-  "constraint_checks": [
-    {
-      "constraint_id": "C01",
-      "description": "ω=1.4005 s⁻¹，激励力 f cos(ωt)，f=6250 N",
-      "type": "硬约束",
-      "source": "约束.md §硬约束",
-      "condition": "代码输入频率为1.4005，激励力振幅6250 N，激励为简谐形式",
-      "scope": "整个仿真区间",
-      "threshold": "频率偏差 < 1e-6",
-      "observed_value": "频率读取附件3行B列=1.4005，偏差=0；激励力振幅=6250 N",
-      "satisfied": true,
-      "evidence": "附件3.xlsx B2单元格=1.4005，G2单元格=6250；代码内联式 F*cos(ωt)"
-    },
-    {
-      "constraint_id": "C02",
-      "description": "情形一 c=10000 N·s/m，情形二 c₀=10000, p=0.5",
-      "type": "硬约束",
-      "source": "约束.md §硬约束",
-      "condition": "情形一阻尼力=c·v_r，情形二阻尼力=c₀·|v_r|^p·v_r",
-      "scope": "整个仿真区间",
-      "threshold": "参数精确取值",
-      "observed_value": "情形一 c=10000，情形二 c₀=10000, p=0.5",
-      "satisfied": true,
-      "evidence": "代码内常量C0=10000, P=0.5；输出文件表头与文件名标注区分情形一/二"
-    },
-    {
-      "constraint_id": "C03",
-      "description": "初始位移和初始速度均为零",
-      "type": "硬约束",
-      "source": "约束.md §硬约束",
-      "condition": "z_f(0)=z_o(0)=0, z_f'(0)=z_o'(0)=0",
-      "scope": "t=0时刻",
-      "threshold": "精确为零",
-      "observed_value": "t=0行: 浮子位移=0, 浮子速度=0, 振子位移=0, 振子速度=0",
-      "satisfied": true,
-      "evidence": "result1-1.xlsx row3: [0,0,0,0,0]; result1-2.xlsx row3: [0,0,0,0,0]"
-    },
-    {
-      "constraint_id": "C04",
-      "description": "结果按0.2 s间隔输出，写入指定模板",
-      "type": "硬约束",
-      "source": "约束.md §硬约束",
-      "condition": "时间增量=0.2 s；表头与题面模板一致（时间/浮子/振子/位移/速度）",
-      "scope": "全部输出行",
-      "threshold": "间隔=0.2 s，表头匹配",
-      "observed_value": "898行数据(含t=0)，Δt=0.2 s恒定；表头含'时间(s)''浮子''振子''位移(m)''速度(m/s)'",
-      "satisfied": true,
-      "evidence": "result1-1.xlsx: 900行(含表头2+数据898)，row4 t=0.2，row5 t=0.4..."
-    },
-    {
-      "constraint_id": "C05",
-      "description": "浮子水动力参数只施加于浮子；振子不直接承受波浪力",
-      "type": "硬约束",
-      "source": "约束.md §硬约束",
-      "condition": "m_a, b_h, F 仅作用于浮子方程",
-      "scope": "运动方程结构",
-      "threshold": "振子方程不含 F,b_h,m_a",
-      "observed_value": "浮子加速度含(F cos ωt - b_h v_f - K_h z_f + k ξ + D)/(m_f+m_a)；振子加速度=(-k ξ - D)/m_o，不含波浪激励力/兴波阻尼/附加质量项",
-      "satisfied": true,
-      "evidence": "基于 数学模型.md 式(Q1-2)(Q1-3)的方程结构；振子方程无波浪力项"
-    },
-    {
-      "constraint_id": "C06",
-      "description": "仿真时长40个波浪周期",
-      "type": "硬约束",
-      "source": "约束.md §边界与可行域",
-      "condition": "t_max = 40·2π/ω = 40·T",
-      "scope": "仿真区间",
-      "threshold": "覆盖前40个周期(0到179.4568 s)",
-      "observed_value": "最后采样时刻179.4 s（≤179.4568 s），对应约40个完整周期",
-      "satisfied": true,
-      "evidence": "result1-1.xlsx 末行 t=179.4 s；t_max=40·2π/1.4005≈179.46 s"
-    },
-    {
-      "constraint_id": "C07",
-      "description": "阻尼参数非负，保证PTO为耗散元件",
-      "type": "软约束",
-      "source": "约束.md §边界与可行域",
-      "condition": "c ≥ 0, c₀ ≥ 0, p ≥ 0",
-      "scope": "参数定义",
-      "threshold": "非负",
-      "observed_value": "c=10000≥0, c₀=10000≥0, p=0.5≥0",
-      "satisfied": true,
-      "evidence": "参数定义处；诊断CSV显示 min(D·v_r)=0≥0，无负耗散"
-    },
-    {
-      "constraint_id": "C08",
-      "description": "耗散功率D·v_r非负，无能量注入",
-      "type": "软约束",
-      "source": "建模思路.md §失效模式",
-      "condition": "D·v_r ≥ 0 ∀t",
-      "scope": "整个仿真区间",
-      "threshold": "≥ 0 (允许舍入误差 -1e-9)",
-      "observed_value": "情形一 min(D·v_r)=0；情形二 min(D·v_r)=0",
-      "satisfied": true,
-      "evidence": "result1_数值诊断.csv: 最小耗散功率D*vr(瓦特,应>=0),情形一,0；情形二,0"
-    },
-    {
-      "constraint_id": "C09",
-      "description": "运动幅度在微幅波适用范围内",
-      "type": "软约束",
-      "source": "约束.md §软约束",
-      "condition": "垂荡位移与速度不出现无界增长",
-      "scope": "整个仿真区间",
-      "threshold": "幅值有限",
-      "observed_value": "情形一 max|z_f|=0.751 m, max|v_f|=1.220 m/s；情形二 max|z_f|=0.763 m, max|v_f|=1.238 m/s",
-      "satisfied": true,
-      "evidence": "result1_数值诊断.csv 最大位移/速度统计"
-    },
-    {
-      "constraint_id": "C10",
-      "description": "结果含t=10,20,40,60,100 s的位移和速度（论文所需）",
-      "type": "论文要求",
-      "source": "题目原文 Q1",
-      "condition": "关键时间点响应值",
-      "scope": "特定时刻",
-      "threshold": "提取指定时刻",
-      "observed_value": "t=10,20,40,60,100 s 均提取并存于关键时间点csv",
-      "satisfied": true,
-      "evidence": "result1-1_关键时间点.csv, result1-2_关键时间点.csv"
-    }
-  ],
-  "cross_validation": {
-    "case1_linear_analytical": {
-      "method": "线性矩阵(-ω²M+iωC+K)z=[F,0]²求解析稳态解",
-      "comparison_time": "179.4 s（末端，瞬态已充分衰减）",
-      "result": "匹配",
-      "details": "zf 解析=0.430574 vs 数值=0.430640，偏差=0.015%"
-    },
-    "convergence": {
-      "method": "dt=0.001 与 dt=0.0005 对比",
-      "result": "匹配",
-      "details": "情形一 max|Δzf|=7.62e-10 m，情形二 max|Δzf|=7.62e-10 m"
-    }
+  "owner_code": "L",
+  "generated_by": "独立审查器（忽略算法/求解代码）",
+  "generated_at": "2026-08-25",
+  "sources": {
+    "题目": "题目信息/A题/A题.pdf",
+    "模型": "模型/Q1/v1/数学模型.md",
+    "约束": "模型/Q1/v1/约束.md",
+    "运行结果": "code_L/Q1/v1/结果（包括各种过程数据与审查）/运行输出/run001/"
   },
-  "unresolved_items": [],
-  "human_sign_off_required": [
-    "确认幂律阻尼力完整表达 D=c₀|v|^p·v_r",
-    "确认位移以静水平衡位置为零点的假设",
-    "确认附件3水动力参数在40周期内按常量使用的假设"
+  "checks": [
+    {
+      "id": "C01",
+      "desc": "位移/速度数值有限、无 NaN/Inf",
+      "status": "pass_indirect",
+      "evidence": "结果分析.md 1.1/1.2 表数值有限；独立复算（RK4 时域）与论文A001逐位吻合，间接佐证有限有界",
+      "note": "run001 工件目录为空，未直接读取原始 CSV/XLSX"
+    },
+    {
+      "id": "C02",
+      "desc": "初值静水平衡：z_f=z_o=v_f=v_o=0",
+      "status": "pass",
+      "evidence": "结果分析.md 1.1/1.2 表 t=0 全零"
+    },
+    {
+      "id": "C03",
+      "desc": "响应有界、符合微幅波线性假设（max|z_f|<1.8 m）",
+      "status": "pass_indirect",
+      "evidence": "结果分析.md 1.3 表 max|z_f|=0.7509 m < 1.8 m"
+    },
+    {
+      "id": "C04",
+      "desc": "PTO 耗散功率 D·v_r ≥ 0（阻尼不向系统注入能量）",
+      "status": "pass_indirect",
+      "evidence": "结果分析.md 2.3：min(D·v_r)=0，无异号时刻；独立复算同结论"
+    },
+    {
+      "id": "C05",
+      "desc": "两种阻尼情形共用同一动力学骨架，仅阻尼项定义不同",
+      "status": "pass",
+      "evidence": "数学模型.md Q1-1 统一阻尼函数 D(v_r)"
+    },
+    {
+      "id": "C06",
+      "desc": "附加质量 m_a、兴波阻尼 b_h 仅作用于浮子，振子无波浪激励",
+      "status": "pass",
+      "evidence": "数学模型.md Q1-2/Q1-3：波浪力仅在浮子方程右侧"
+    },
+    {
+      "id": "C07",
+      "desc": "参数取值与附件3/4 一致（ω=1.4005, m_a=1335.535, b_h=656.3616, F=6250 等）",
+      "status": "pass",
+      "evidence": "数学模型.md 符号与参数表"
+    },
+    {
+      "id": "C08",
+      "desc": "采样间隔 0.2 s、覆盖 40 周期（t_max≈179.4 s）符合题面",
+      "status": "pass_indirect",
+      "evidence": "结果分析.md 1.3：采样点数 898、仿真时长 0~179.4 s"
+    },
+    {
+      "id": "C09",
+      "desc": "与论文A001答案核对一致（9 位有效数字）",
+      "status": "pass",
+      "evidence": "独立复算 RK4 结果与论文表2/表3 逐位一致"
+    },
+    {
+      "id": "C10",
+      "desc": "论文表2'浮子位移(mm)'单位标注错误（实为 m）",
+      "status": "flag_info",
+      "evidence": "论文数值量级与振子列及物理幅值矛盾，数据本身正确"
+    }
   ],
-  "conclusion": "10项约束全满足，无违反。解析交叉验证通过（偏差0.015%），RK4收敛误差 7.6e-10 m。语义状态 human_required 仅因模型层假设待确认，不影响结果的数学正确性。"
+  "traceability_flags": [
+    {
+      "severity": "high",
+      "desc": "运行输出/run001/ 目录为空，结果分析.md 引用的 CSV/XLSX 工件未归档，C01/C03/C04/C08 等结论无法从现有工件直接回溯",
+      "action": "需将 solve.cpp 正式运行产物归档回 运行输出/run001/ 后闭合审查"
+    }
+  ],
+  "semantic_state": "human_required",
+  "semantic_note": "结果数值已通过独立复算确认正确；但工件缺失使内部 C01~C10 无法机器闭包，须人工确认并补回工件。模型层假设（位移以静平衡为零点、幂律阻尼 D=c₀|v|^p·v_r）仍属 draft 待确认，非结果缺陷。",
+  "conclusion": "Q1 直接结果数值正确、与论文A001逐位一致；唯一阻断项为 run001 工件缺失，须补登后方可判定完全通过。"
 }

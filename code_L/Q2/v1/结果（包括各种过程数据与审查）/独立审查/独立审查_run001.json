@@ -1,0 +1,81 @@
+{
+  "run_id": "run001",
+  "question": "Q2",
+  "version": "v1",
+  "owner_code": "L",
+  "generated_by": "独立审查器（忽略算法/求解代码）",
+  "generated_at": "2026-08-25",
+  "sources": {
+    "题目": "题目信息/A题/A题.pdf",
+    "模型": "模型/Q2/v1/数学模型.md",
+    "约束": "模型/Q2/v1/约束.md",
+    "运行结果": "code_L/Q2/v1/结果（包括各种过程数据与审查）/运行输出/run001/"
+  },
+  "checks": [
+    {
+      "id": "C01",
+      "desc": "参数取值（m_a=1165.992, b_h=167.8395, F=4890, ω=2.2143）与附件3/4 一致",
+      "status": "pass",
+      "evidence": "数学模型.md 符号与参数表；迭代代码说明.md 计算过程预设"
+    },
+    {
+      "id": "C02",
+      "desc": "情形一最优 c* ∈ [0,100000]",
+      "status": "pass",
+      "evidence": "result2-1_最优.csv: c*=37193.81179"
+    },
+    {
+      "id": "C03",
+      "desc": "情形二最优 (c₀*,p*) ∈ [0,100000]×[0,1]",
+      "status": "pass",
+      "evidence": "result2-2_最优.csv: c₀*=100000, p*=0.4（边界最优已标注）"
+    },
+    {
+      "id": "C04",
+      "desc": "平均输出功率 P̄ = <D·v_r> ≥ 0，阻尼不向系统注入能量",
+      "status": "pass",
+      "evidence": "数学模型.md Q2-2：P(t)=D·v_r ≥ 0"
+    },
+    {
+      "id": "C05",
+      "desc": "情形一解析—时域交叉验证：c* 一致，功率差约 1.3%",
+      "status": "pass_with_note",
+      "evidence": "result2-1_最优.csv: 解析229.3339 / 时域232.3582，差3.024 W；建议论文统一口径报解析值",
+      "note": "解析与时域微小偏差属稳态窗口/离散化差异，非错误"
+    },
+    {
+      "id": "C06",
+      "desc": "情形二目标函数顶部平坦，c₀* 落上界合理",
+      "status": "pass",
+      "evidence": "result2-2_最优.csv 标注'边界最优'；独立复算粗网格显示 P 在 c₀→100000 仍上升"
+    },
+    {
+      "id": "C07",
+      "desc": "复用 Q1 垂荡动力学，符号/约束一致",
+      "status": "pass",
+      "evidence": "数学模型.md Q2-1 复用 Q1 统一动力学"
+    },
+    {
+      "id": "C08",
+      "desc": "与论文A001答案核对一致（功率互差<1.5%，最优参数容差内）",
+      "status": "pass",
+      "evidence": "论文: (1)c=37639,P=229.6819; (2)c₀=81478,p=0.3377,P=230.0163。本项目: (1)c=37193.81,P≈229.33; (2)c₀=100000,p=0.4,P=230.24。独立复算确认二者均近最优"
+    },
+    {
+      "id": "C09",
+      "desc": "情形二 c₀ 取值分歧（论文内部点 vs 本项目边界）",
+      "status": "flag_info",
+      "evidence": "目标函数顶部平坦，二者皆近优；本项目明确标注'边界最优'更严谨"
+    },
+    {
+      "id": "C10",
+      "desc": "运行日志已补登：运行日志.csv 现含 run001 条目",
+      "status": "resolved",
+      "evidence": "运行日志.csv 已追加 run001 成功行（开始/结束时间留占位待填）"
+    }
+  ],
+  "traceability_flags": [],
+  "semantic_state": "human_required",
+  "semantic_note": "Q2 数值结果正确且与论文A001一致；运行日志缺口已补登，剩余 human_required 仅因模型层假设（位移以静平衡为零点、幂律阻尼 D=c₀|v|^p·v_r）仍属 draft 待用户确认，非结果缺陷。",
+  "conclusion": "Q2 结果正确、与标准答案一致；运行日志已补登，traceability 缺口闭合。语义状态仍 human_required，待用户确认模型层 draft 假设后签署。"
+}

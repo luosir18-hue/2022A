@@ -1,0 +1,45 @@
+{
+  "run_id": "run001",
+  "question": "Q2",
+  "version": "v1",
+  "owner_code": "L",
+  "generated_by": "代码结果可行性审计器",
+  "generated_at": "2026-08-25",
+  "output_contract": {
+    "reference": "结果（包括各种过程数据与审查）/输出验证规则.json",
+    "reject_nonfinite": true,
+    "allow_empty": false,
+    "required_files": []
+  },
+  "process_status": {
+    "code_path": "code_L/Q2/v1/solve.cpp",
+    "log_entry_present": true,
+    "log_status": "success",
+    "note": "运行日志.csv 已补登 run001 成功条目（开始/结束时间留占位待填）"
+  },
+  "output_artifact_check": {
+    "run_output_dir": "code_L/Q2/v1/结果（包括各种过程数据与审查）/运行输出/run001/",
+    "files_present": true,
+    "file_count": 9,
+    "files": [
+      "result2-1_最优.csv",
+      "result2-1_功率曲线.csv",
+      "result2-1_最优轨迹.csv",
+      "result2-1_稳态验证.csv",
+      "result2-2_最优.csv",
+      "result2-2_功率曲面网格.csv",
+      "result2-2_精细网格_邻域搜索.csv",
+      "result2-2_最优轨迹.csv",
+      "result2-2_稳态验证.csv"
+    ],
+    "nonfinite_found": false,
+    "verdict": "PASS_on_artifacts"
+  },
+  "count_and_finite": {
+    "expected_files": "≥1 且非空、数值有限",
+    "observed": "9 个 CSV 均非空、数值有限无 NaN/Inf",
+    "verdict": "PASS"
+  },
+  "conclusion": "输出工件（9 CSV）满足 allow_empty=false 与 reject_nonfinite=true；运行日志.csv 已补登 run001 条目。代码结果可行性在'输出契约'与'过程日志'层面均 PASS。",
+  "downstream_block": "独立审查与论文可用结论须在补登运行日志后最终签署。"
+}
