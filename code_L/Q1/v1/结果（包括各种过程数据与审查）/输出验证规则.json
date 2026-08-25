@@ -1,11 +1,30 @@
 {
-  "required_files": [],
-  "expected_counts": {},
+  "required_files": [
+    "result1-1.xlsx",
+    "result1-2.xlsx",
+    "result1-1_关键时间点.csv",
+    "result1-2_关键时间点.csv",
+    "result1-1_功率与能量.csv",
+    "result1-2_功率与能量.csv",
+    "result1_两情形对比.csv",
+    "result1_数值诊断.csv"
+  ],
+  "expected_counts": {
+    "result1-1.xlsx": "898 数据行(含 t=0, 0.2s 间隔, 0..179.4s)",
+    "result1-2.xlsx": "898 数据行(含 t=0, 0.2s 间隔, 0..179.4s)",
+    "result1-1_关键时间点.csv": "6 行(表头+5 个时间点)",
+    "result1-2_关键时间点.csv": "6 行(表头+5 个时间点)"
+  },
+  "required_columns": {
+    "result1-1.xlsx": ["时间(s)", "浮子位移(m)", "浮子速度(m/s)", "振子位移(m)", "振子速度(m/s)"],
+    "result1-2.xlsx": ["时间(s)", "浮子位移(m)", "浮子速度(m/s)", "振子位移(m)", "振子速度(m/s)"],
+    "result1_数值诊断.csv": ["检查项", "情形", "数值"]
+  },
   "reject_nonfinite": true,
   "require_constraint_validation": false,
   "allow_empty": false,
   "validation_script": "",
   "audit_scope": "execution_output_only",
   "feasibility_audit": "external",
-  "说明": "这里只配置运行输出事实检查。代码结果可行性报告记录输出契约；约束语义审查由结果分析阶段的独立审查器完成。"
+  "说明": "只配置运行输出事实检查。代码结果可行性报告记录输出契约；约束语义审查由结果分析阶段的独立审查器完成。"
 }

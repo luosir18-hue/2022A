@@ -5,18 +5,50 @@
   "owner_role": "建模手",
   "version": "v1",
   "entrypoint": {
-    "code": "solve.py",
-    "command": [
-      "{python}",
-      "{code_path}"
+    "code": "solve.cpp",
+    "language": "cpp",
+    "build_command": [
+      "g++",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-std=c++17",
+      "{code_path}",
+      "-lz",
+      "-o",
+      "{build_dir}/solve"
     ],
-    "workdir": "."
+    "command": [
+      "{build_dir}/solve",
+      "--data",
+      "题目信息/A题",
+      "--out",
+      "{output_dir}"
+    ],
+    "workdir": ".",
+    "prefer_cpp": true,
+    "note": "按总控规则优先 C++：solve.cpp 与 solve_注释.cpp 功能一致、编译零警告、结果字节一致；正式运行优先执行 solve.cpp。"
   },
   "output_contract": {
     "spec": "结果（包括各种过程数据与审查）/输出验证规则.json",
-    "required_files": [],
-    "expected_counts": {},
-    "required_columns": {},
+    "required_files": [
+      "result1-1.xlsx",
+      "result1-2.xlsx",
+      "result1-1_关键时间点.csv",
+      "result1-2_关键时间点.csv",
+      "result1-1_功率与能量.csv",
+      "result1-2_功率与能量.csv",
+      "result1_两情形对比.csv",
+      "result1_数值诊断.csv"
+    ],
+    "expected_counts": {
+      "result1-1.xlsx": "898 数据行(含 t=0, 0.2s 间隔, 0..179.4s)",
+      "result1-2.xlsx": "898 数据行(含 t=0, 0.2s 间隔, 0..179.4s)"
+    },
+    "required_columns": {
+      "result1-1.xlsx": ["时间(s)", "浮子位移(m)", "浮子速度(m/s)", "振子位移(m)", "振子速度(m/s)"],
+      "result1-2.xlsx": ["时间(s)", "浮子位移(m)", "浮子速度(m/s)", "振子位移(m)", "振子速度(m/s)"]
+    },
     "constraint_validation": "external"
   },
   "precomputation": {
@@ -28,9 +60,9 @@
   "independent_review": {
     "problem_source": "题目简报.md",
     "model_sources": [
-      "模型/{question}/v1/数学模型.md",
-      "模型/{question}/v1/建模思路.md",
-      "模型/{question}/v1/约束.md"
+      "模型/Q1/v1/数学模型.md",
+      "模型/Q1/v1/建模思路.md",
+      "模型/Q1/v1/约束.md"
     ],
     "ignored_inputs": [
       "algorithm",

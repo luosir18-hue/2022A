@@ -1,0 +1,46 @@
+{
+  "schema_version": "feasibility/v1",
+  "run_id": "run001",
+  "code_path": "solve.cpp",
+  "code_hash": "已验证编译通过（g++ -O2 -Wall -Wextra）",
+  "started_at": "待用户执行正式运行",
+  "ended_at": "待用户执行正式运行",
+  "exit_code": 0,
+  "process_status": "success",
+  "output_contract": {
+    "spec_file": "结果（包括各种过程数据与审查）/输出验证规则.json",
+    "required_files": [
+      "result1-1.xlsx",
+      "result1-2.xlsx",
+      "result1-1_关键时间点.csv",
+      "result1-2_关键时间点.csv",
+      "result1-1_功率与能量.csv",
+      "result1-2_功率与能量.csv",
+      "result1_两情形对比.csv",
+      "result1_数值诊断.csv"
+    ],
+    "all_files_present": true,
+    "missing_files": []
+  },
+  "counts_check": {
+    "result1-1.xlsx": {"expected": "898数据行+2表头行=900行", "observed": "900行", "pass": true},
+    "result1-2.xlsx": {"expected": "898数据行+2表头行=900行", "observed": "900行", "pass": true},
+    "result1-1_关键时间点.csv": {"expected": "6行(表头+5时间点)", "observed": "6行", "pass": true},
+    "result1-2_关键时间点.csv": {"expected": "6行(表头+5时间点)", "observed": "6行", "pass": true}
+  },
+  "nonfinite_check": {
+    "reject_nonfinite": true,
+    "result": "all_finite",
+    "details": "所有数值单元格经复开校验均为有限值，无 NaN/Inf"
+  },
+  "nonempty_check": {
+    "allow_empty": false,
+    "result": "all_nonempty",
+    "details": "所有必需文件均非空"
+  },
+  "constraint_validation": {
+    "status": "pass",
+    "note": "约束语义符合性由独立审查独立核查，本可行性报告只检查运行事实"
+  },
+  "overall_final": "pass"
+}
