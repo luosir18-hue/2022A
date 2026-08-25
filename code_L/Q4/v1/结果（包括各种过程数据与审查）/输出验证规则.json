@@ -1,0 +1,11 @@
+{
+  "required_files": [],
+  "expected_counts": {},
+  "reject_nonfinite": true,
+  "require_constraint_validation": false,
+  "allow_empty": false,
+  "validation_script": "",
+  "audit_scope": "execution_output_only",
+  "feasibility_audit": "external",
+  "说明": "这里只配置运行输出事实检查。代码结果可行性报告记录输出契约；约束语义审查由结果分析阶段的独立审查器完成。"
+}

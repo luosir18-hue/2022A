@@ -1,0 +1,12 @@
+{
+  "schema_version": "l-modeling-result-analysis/v1",
+  "subskills": {
+    "presentation": "required",
+    "compare_previous_question": "conditional_immediate_predecessor_only",
+    "independent_review": "required_before_paper_claims"
+  },
+  "previous_question": null,
+  "code_feasibility_report_pattern": "结果（包括各种过程数据与审查）/可行性_feasibility/代码结果可行性_{run_id}.json",
+  "independent_review_report_pattern": "结果（包括各种过程数据与审查）/独立审查/独立审查_{run_id}.json",
+  "semantic_conclusion": "human_required"
+}

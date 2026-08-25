@@ -1,0 +1,40 @@
+{
+  "schema_version": "l-modeling-run-config/v1",
+  "owner_name": "罗懿",
+  "owner_code": "L",
+  "owner_role": "建模手",
+  "version": "v1",
+  "entrypoint": {
+    "code": "solve.py",
+    "command": [
+      "{python}",
+      "{code_path}"
+    ],
+    "workdir": "."
+  },
+  "output_contract": {
+    "spec": "结果（包括各种过程数据与审查）/输出验证规则.json",
+    "required_files": [],
+    "expected_counts": {},
+    "required_columns": {},
+    "constraint_validation": "external"
+  },
+  "precomputation": {
+    "inventory": "预计算数据清单.md",
+    "asset_root": "结果（包括各种过程数据与审查）/预计算资产",
+    "reuse_policy": "reuse_only_when_key_and_hash_match",
+    "cache_mismatch": "recompute_or_block"
+  },
+  "independent_review": {
+    "problem_source": "题目简报.md",
+    "model_sources": [
+      "模型/{question}/v1/数学模型.md",
+      "模型/{question}/v1/建模思路.md",
+      "模型/{question}/v1/约束.md"
+    ],
+    "ignored_inputs": [
+      "algorithm",
+      "code"
+    ]
+  }
+}
