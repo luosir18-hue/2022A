@@ -1,0 +1,163 @@
+{
+  "report_kind": "independent-review",
+  "audit_kind": "independent-feasibility",
+  "schema_version": "zs-math-model-feasibility/v1",
+  "generated_at": "2026-08-26T00:00:00+00:00",
+  "project_root": "/home/z/桌面/文件/数模/practice/2022A",
+  "question": "Q3",
+  "member": "L",
+  "version": "v1",
+  "run_id": "run001",
+  "semantic_status": "human_required",
+  "reviewed_by": "",
+  "review_note": "自然语言/公式约束的语义满足性需要人工或独立模型审阅；本工具不代替该判断。证据层已列出硬约束与软约束的事实观测值，但最终'满足约束/可行'的论文表述需人工签署后方可生效。",
+  "source_files": [
+    {"label": "problem_source", "path": "题目信息/题目重述_problem_brief.md", "relative_path": "题目信息/题目重述_problem_brief.md", "exists": false, "sha256": ""},
+    {"label": "数学模型.md", "path": "模型/Q3/v2/数学模型.md", "relative_path": "模型/Q3/v2/数学模型.md", "exists": true, "sha256": "7f7562db2182308c31f1dd4ae2f2a651f5b20ae088d3bdcf0cc70c9e44f7316d"},
+    {"label": "建模思路.md", "path": "模型/Q3/v2/建模思路.md", "relative_path": "模型/Q3/v2/建模思路.md", "exists": true, "sha256": "f9193aac498ad8dfc0c6a46df87d315eab0021143b45ffcf0928c9a66b4ccd0d"},
+    {"label": "约束.md", "path": "模型/Q3/v2/约束.md", "relative_path": "模型/Q3/v2/约束.md", "exists": true, "sha256": "29ae97c537aba418cea8d1d7e34ce5ecbd191f58edb352cdadacaacf2a605772"}
+  ],
+  "problem_source_kind": "summary",
+  "ignored_inputs": ["algorithm", "code", "solve.py", "solve.cpp", "伪代码.md"],
+  "checks": [
+    {"name": "source:数学模型.md", "status": "pass", "path": "模型/Q3/v2/数学模型.md"},
+    {"name": "source:建模思路.md", "status": "pass", "path": "模型/Q3/v2/建模思路.md"},
+    {"name": "source:约束.md", "status": "pass", "path": "模型/Q3/v2/约束.md"},
+    {"name": "source:problem_source", "status": "fail", "path": "题目信息/题目重述_problem_brief.md"},
+    {"name": "result_outputs_present", "status": "pass", "files": [
+      "result3.csv", "result3.xlsx", "result3_key.csv",
+      "result3_能量恒等式.csv", "result3_弹簧长度检查.csv",
+      "result3_质量矩阵正定性.csv", "result3_线性模型对照.csv", "result3_响应幅值摘要.csv"
+    ]},
+    {"name": "hard_constraint_section", "status": "pass", "constraint_markers": [
+      "## 硬约束", "## 软约束", "## 边界与可行域"
+    ]}
+  ],
+  "warnings": [
+    "problem_source (题目重述_problem_brief.md) 不存在，独立审查的题目来源回退为题目原文/已重述内容，未纳入哈希证据链。"
+  ],
+  "constraint_evidence": [
+    {
+      "constraint_id": "C-Q3-H1",
+      "condition": "正式结果只积分式(Q3-10)~(Q3-16)；线性系统(式Q3-17)只作校验不写入提交表",
+      "scope": "提交表 result3.xlsx 来源",
+      "threshold": "nonlinear_only",
+      "unit": "-",
+      "observed_value": "result3.xlsx 由非线性积分生成；线性差异记录在 result3_线性模型对照.csv（辅助，未入提交表）",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3.xlsx, result3_线性模型对照.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H2",
+      "condition": "派生常数固定：K_h=31557.2982, z_G=2.2079252, d=-1.4079252, I_f=8398.7761, I_o=202.75, ℓ_e=0.4519575",
+      "scope": "求解器输入常量",
+      "threshold": "exact_match",
+      "unit": "-",
+      "observed_value": "K_h=31557.29821, z_G=2.207925157, d=-1.407925157, I_f=8398.77606, I_o=202.75, ℓ_e=0.4519575",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/stdout.log"
+    },
+    {
+      "constraint_id": "C-Q3-H3",
+      "condition": "ω=1.7152 s⁻¹, F=3640 N, L=1690 N·m, 外力=(F cosωt, L cosωt, 0, 0)",
+      "scope": "激励项",
+      "threshold": "exact_match",
+      "unit": "s⁻¹/N/N·m",
+      "observed_value": "ω=1.7152, F=3640, L=1690",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/stdout.log"
+    },
+    {
+      "constraint_id": "C-Q3-H4",
+      "condition": "c_l=10000 N·s/m, c_θ=1000 N·m·s/rad",
+      "scope": "PTO 阻尼",
+      "threshold": "exact_match",
+      "unit": "N·s/m, N·m·s/rad",
+      "observed_value": "c_l=10000, c_θ=1000",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/stdout.log"
+    },
+    {
+      "constraint_id": "C-Q3-H5",
+      "condition": "m_a,J_a,b_h,b_θ,F,L 全部作用在浮子坐标(z_f,θ_f)；交叉水动力为0；纵摇参考轴取浮子质心横轴",
+      "scope": "水动力作用点",
+      "threshold": "structural",
+      "unit": "-",
+      "observed_value": "模型式(Q3-10)~(Q3-13) 中附加质量/阻尼/激励只进入浮子方程；无交叉项",
+      "status": "PASS",
+      "evidence_path": "模型/Q3/v2/数学模型.md"
+    },
+    {
+      "constraint_id": "C-Q3-H6",
+      "condition": "初值 q(0)=0, q̇(0)=0",
+      "scope": "t=0 状态",
+      "threshold": "all_zero",
+      "unit": "-",
+      "observed_value": "result3.csv t=0 行 z_f=θ_f=ξ=θ_o=0 且速度全为0",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H7",
+      "condition": "0.2s 输出采样间隔；t_n=0.2n, n=0..⌊t_max/0.2⌋；t_max=40(2π/ω)",
+      "scope": "输出时刻网格",
+      "threshold": "733_points",
+      "unit": "s",
+      "observed_value": "t_max=146.5295 s, 输出点数=733（含t=0）",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/stdout.log, result3.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H8",
+      "condition": "直线PTO只通过ξ̇进入；旋转PTO只通过(θ̇_o-θ̇_f)进入",
+      "scope": "PTO 耦合项",
+      "threshold": "structural",
+      "unit": "-",
+      "observed_value": "模型式(Q3-14) 阻尼力仅含ξ̇与(θ̇_o-θ̇_f)",
+      "status": "PASS",
+      "evidence_path": "模型/Q3/v2/数学模型.md"
+    },
+    {
+      "constraint_id": "C-Q3-H9",
+      "condition": "ξ>-0.2019575 m 且 M(q) 全程正定；只检查不改方程",
+      "scope": "全程 t∈[0,t_max]",
+      "threshold": "ξ_min>-0.2019575, min_eig_M>0",
+      "unit": "m, -",
+      "observed_value": "ξ_min=-0.0864744743 m (> -0.2019575); 质量矩阵最小特征值=448.0732002577 (>0)",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3_弹簧长度检查.csv, result3_质量矩阵正定性.csv"
+    },
+    {
+      "constraint_id": "S-Q3-S1",
+      "condition": "垂荡幅度与|θ_f|、|θ_o|应处于线性水动力微幅范围",
+      "scope": "响应幅值",
+      "threshold": "micro_amplitude",
+      "unit": "rad",
+      "observed_value": "max|θ_f|=0.152971 rad (≈8.76°), max|θ_o|=0.158245 rad；含瞬态峰值，稳态θ_f幅值≈0.080 rad",
+      "status": "NOT_CHECKED",
+      "evidence_path": "运行输出/run001/result3_响应幅值摘要.csv, 结果分析.md"
+    },
+    {
+      "constraint_id": "S-Q3-S2",
+      "condition": "式(Q3-17)与式(Q3-16)在小扰动下应接近，差异只作诊断",
+      "scope": "线性对照",
+      "threshold": "diagnostic_only",
+      "unit": "m, rad",
+      "observed_value": "max|Δθ_f|=0.019560 rad, max|Δθ_o|=0.020138 rad（部分时刻>0.01rad，已在结果分析.md记录为诊断项，仍以非线性解为准）",
+      "status": "NOT_CHECKED",
+      "evidence_path": "运行输出/run001/result3_线性模型对照.csv, 结果分析.md"
+    },
+    {
+      "constraint_id": "S-Q3-S3",
+      "condition": "式(Q3-18)能量恒等式应在输出轨迹上成立",
+      "scope": "全程 t∈[0,t_max]",
+      "threshold": "rel_residual<=1e-3",
+      "unit": "-",
+      "observed_value": "max 相对残差=0.0000028827 (<=1e-3)",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3_能量恒等式.csv"
+    }
+  ],
+  "errors": [],
+  "conclusion_boundary": "本报告只证明审计输入与证据结构齐全，不证明模型结论或约束语义自动成立；'满足约束/可行'的论文表述需人工或独立审阅签署（reviewed_by 非空且 semantic_status=passed）后方可写入。"
+}

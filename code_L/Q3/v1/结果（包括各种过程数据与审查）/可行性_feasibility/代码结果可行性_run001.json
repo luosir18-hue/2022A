@@ -1,0 +1,113 @@
+{
+  "report_kind": "code-result-feasibility",
+  "audit_kind": "execution-output-feasibility",
+  "schema_version": "zs-math-model-feasibility/v1",
+  "generated_at": "2026-08-26T00:00:00+00:00",
+  "project_root": "/home/z/桌面/文件/数模/practice/2022A",
+  "question": "Q3",
+  "member": "L",
+  "version": "v1",
+  "run_id": "run001",
+  "conclusion_boundary": "本报告只证明运行进程、输出契约、非空/有限值与计数等事实层检查通过，不宣称模型满足题目数学约束（约束语义由独立审查器判定）。",
+  "constraint_semantic_claim": "deferred_to_independent_review",
+  "process_status": {
+    "status": "pass",
+    "executable": "code_L/Q3/v1/solve.cpp",
+    "stderr_empty": true,
+    "stdout_log": "code_L/Q3/v1/结果（包括各种过程数据与审查）/运行输出/run001/stdout.log",
+    "exit_code": 0,
+    "note": "求解器正常完成 0~40 波浪周期积分，无报错、无异常退出。"
+  },
+  "output_contract": {
+    "required_submission_table": "result3.xlsx (按式 Q3-24 写入)",
+    "submission_table_present": true,
+    "submission_table_path": "code_L/Q3/v1/结果（包括各种过程数据与审查）/运行输出/run001/result3.xlsx",
+    "auxiliary_tables_present": [
+      "result3.csv",
+      "result3_key.csv",
+      "result3_能量恒等式.csv",
+      "result3_弹簧长度检查.csv",
+      "result3_质量矩阵正定性.csv",
+      "result3_线性模型对照.csv",
+      "result3_响应幅值摘要.csv"
+    ],
+    "reject_nonfinite": true,
+    "all_columns_finite": true,
+    "allow_empty": false
+  },
+  "non_empty_finite_check": {
+    "status": "pass",
+    "result3_row_count": 733,
+    "result3_column_count": 9,
+    "nonfinite_cells": 0,
+    "empty_tables": 0,
+    "note": "主结果表 733 行 × 9 列，无 NaN/Inf；所有辅助表非空。"
+  },
+  "counts": {
+    "output_time_points": 733,
+    "sampling_interval_s": 0.2,
+    "expected_points_from_tmax": "t_max=146.5295 s, n=0..732 → 733 点",
+    "n_columns_submission": 9,
+    "n_auxiliary_tables": 7,
+    "status": "pass"
+  },
+  "run_facts": {
+    "integration": {
+      "t_max_s": 146.5295081,
+      "period_T_s": 3.663237702,
+      "n_periods": 40,
+      "output_points": 733
+    },
+    "locked_constants_verified": {
+      "omega_s_inv": 1.7152,
+      "F_N": 3640,
+      "L_Nm": 1690,
+      "K_h": 31557.29821,
+      "z_G": 2.207925157,
+      "d": -1.407925157,
+      "ell_e": 0.4519575,
+      "I_f": 8398.77606,
+      "I_o": 202.75,
+      "c_l": 10000,
+      "c_theta": 1000,
+      "status": "pass"
+    },
+    "feasibility_facts": {
+      "spring_min_length_m": 0.3654830257,
+      "xi_min_m": -0.0864744743,
+      "xi_lower_bound_m": -0.2019575,
+      "xi_within_bound": true,
+      "mass_matrix_min_eig": 448.0732002577,
+      "mass_matrix_positive_definite": true,
+      "energy_identity_max_rel_residual": 0.0000028827,
+      "energy_identity_threshold": 1e-3,
+      "energy_identity_pass": true,
+      "linear_compare_max_abs": {
+        "dzf_m": 0.003833,
+        "dthetaf_rad": 0.019560,
+        "dzo_m": 0.003987,
+        "dthetao_rad": 0.020138
+      }
+    },
+    "response_amplitude_max_abs": {
+      "zf_m": 0.8317982648,
+      "dzf_dt_m_s": 1.479347307,
+      "thetaf_rad": 0.1529711795,
+      "dthetaf_dt_rad_s": 0.2299325445,
+      "zo_m": 0.916286226,
+      "dzo_dt_m_s": 1.632727205,
+      "thetao_rad": 0.15824488,
+      "dthetao_dt_rad_s": 0.2383161986
+    }
+  },
+  "source_files": [
+    {"label": "solve_cpp", "path": "code_L/Q3/v1/solve.cpp", "sha256": "9b43782150506fde52dea6f0f962c82f4a7088283b865e81282f6c7528053964", "exists": true},
+    {"label": "result3", "path": "code_L/Q3/v1/结果（包括各种过程数据与审查）/运行输出/run001/result3.csv", "sha256": "439bc92405ad4c367eb164410a2c243fdc840bdf1dd29bd8c0f5763e4e6e19ab", "exists": true},
+    {"label": "result3_xlsx", "path": "code_L/Q3/v1/结果（包括各种过程数据与审查）/运行输出/run001/result3.xlsx", "sha256": "3f4f8b7147f1374ddd2b63b348b7bbb8c4431e97f7b0b88c9664ea18a9d50021", "exists": true},
+    {"label": "result3_key", "path": "code_L/Q3/v1/结果（包括各种过程数据与审查）/运行输出/run001/result3_key.csv", "sha256": "5cb875a986641efb29165ccbb2066d85fa41fd9ba9107b963c4a8e6b2b656255", "exists": true}
+  ],
+  "ignored_inputs": ["algorithm_semantics", "code_logic", "model_constraint_satisfaction"],
+  "warnings": [],
+  "errors": [],
+  "feasibility_verdict": "process_and_output_contract_pass"
+}
