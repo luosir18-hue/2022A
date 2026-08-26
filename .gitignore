@@ -1,0 +1,13 @@
+# 编译产物（由源码重新生成，不入库）
+code_*/**/solve
+code_*/**/solve_注释
+*.o
+*.obj
+*.out
+*.exe
+a.out
+
+# 操作系统/编辑器临时文件
+.DS_Store
+Thumbs.db
+*~
