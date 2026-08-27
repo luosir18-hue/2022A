@@ -383,6 +383,22 @@ double eig_min_2x2(double a, double b, double d) {
 }
 
 // ====================================================================
+// 机械能（v1/v2 能量与耗散节的线性化形式）：T = ½ ẏᵀ M ẏ，V = ½ yᵀ K y
+// ====================================================================
+double kinetic_energy(const double qd[4], const double M[4][4]) {
+    double s = 0.0;
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j) s += qd[i] * M[i][j] * qd[j];
+    return 0.5 * s;
+}
+double potential_energy(const double q[4], const double K[4][4]) {
+    double s = 0.0;
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j) s += q[i] * K[i][j] * q[j];
+    return 0.5 * s;
+}
+
+// ====================================================================
 // 常系数块矩阵组装（状态顺序 z_f, z_o, θ_f, θ_o）
 // 式 Q3-v3-5：M·ÿ + C·ẏ + K·y = f(t)
 // ====================================================================
@@ -446,9 +462,10 @@ void build_matrices(const Params& p,
 }
 
 // ====================================================================
-// 一阶状态右端函数（8 分量）：y=(z_f,z_o,θ_f,θ_o, ż_f,ż_o,θ̇_f,θ̇_o)
+// 一阶状态右端函数（10 分量）：y=(z_f,z_o,θ_f,θ_o, ż_f,ż_o,θ̇_f,θ̇_o, W_in,W_diss)
+//   前 8 分量为二阶系统的 (q, q̇)；W_in、W_diss 为能量/耗散伴随状态（被动标量）
 // ====================================================================
-void rhs(double t, const double y[8], double dy[8],
+void rhs(double t, const double y[10], double dy[10],
          const Params& p,
          const double Minv[4][4], const double C[4][4], const double K[4][4]) {
     const double* q = y;       // 广义坐标 (z_f, z_o, θ_f, θ_o)
@@ -479,20 +496,32 @@ void rhs(double t, const double y[8], double dy[8],
     // 组装一阶状态导数 Ẏ = (q̇, q̈)
     for (int i = 0; i < 4; ++i) dy[i] = qd[i];
     for (int i = 0; i < 4; ++i) dy[4 + i] = qdd[i];
+
+    // 能量/耗散伴随状态（继承 v1/v2 能量与耗散节，v2 式 Q3-18 线性版）：
+    //   dE/dt = F cos(ωt) ż_f + L cos(ωt) θ̇_f
+    //           − [b_h ż_f² + b_θ θ̇_f² + c_l(ż_o−ż_f)² + c_θ(θ̇_o−θ̇_f)²]
+    // dW_in/dt = 波浪输入功率；dW_diss/dt = 总耗散功率（两者仅依赖 q、q̇，不影响前 8 分量演化）
+    double Pin = (p.F_amp * qd[0] + p.L_amp * qd[2]) * std::cos(p.omega * t);  // 输入功率
+    double Pd  = p.b_h * qd[0] * qd[0]                                        // 垂荡兴波耗散 b_h ż_f²
+               + p.b_theta * qd[2] * qd[2]                                    // 纵摇兴波耗散 b_θ θ̇_f²
+               + C_L * (qd[1] - qd[0]) * (qd[1] - qd[0])                      // 直线 PTO c_l(ż_o−ż_f)²
+               + C_THETA * (qd[3] - qd[2]) * (qd[3] - qd[2]);                 // 旋转 PTO c_θ(θ̇_o−θ̇_f)²
+    dy[8] = Pin;   // dW_in/dt
+    dy[9] = Pd;    // dW_diss/dt
 }
 
-void rk4_step(double& t, double y[8], double dt,
+void rk4_step(double& t, double y[10], double dt,
               const Params& p,
               const double Minv[4][4], const double C[4][4], const double K[4][4]) {
-    double k1[8], k2[8], k3[8], k4[8], yt[8];
+    double k1[10], k2[10], k3[10], k4[10], yt[10];
     rhs(t, y, k1, p, Minv, C, K);
-    for (int i = 0; i < 8; ++i) yt[i] = y[i] + 0.5 * dt * k1[i];
+    for (int i = 0; i < 10; ++i) yt[i] = y[i] + 0.5 * dt * k1[i];
     rhs(t + 0.5 * dt, yt, k2, p, Minv, C, K);
-    for (int i = 0; i < 8; ++i) yt[i] = y[i] + 0.5 * dt * k2[i];
+    for (int i = 0; i < 10; ++i) yt[i] = y[i] + 0.5 * dt * k2[i];
     rhs(t + 0.5 * dt, yt, k3, p, Minv, C, K);
-    for (int i = 0; i < 8; ++i) yt[i] = y[i] + dt * k3[i];
+    for (int i = 0; i < 10; ++i) yt[i] = y[i] + dt * k3[i];
     rhs(t + dt, yt, k4, p, Minv, C, K);
-    for (int i = 0; i < 8; ++i) y[i] += (dt / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]);
+    for (int i = 0; i < 10; ++i) y[i] += (dt / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]);
     t += dt;
 }
 
@@ -509,8 +538,24 @@ struct Sample {
     double Pl, Pth;  // 两类 PTO 瞬时功率 (W)
 };
 
+// 能量/耗散记录（继承 v1/v2 能量与耗散节）：用于能量恒等式核验
+struct EnergyRec {
+    double t;      // 时间 (s)
+    double Tk;     // 动能 T = ½ ẏᵀMẏ (J)
+    double Vp;     // 势能 V = ½ yᵀKy (J)
+    double E_dir;  // 机械能 E=T+V，由状态直接计算 (J)
+    double W_in;   // 累计输入功 ∫P_in dt（RK4 伴随积分）(J)
+    double W_diss; // 累计耗散 ∫P_diss dt (J)
+    double P_in;   // 波浪输入功率 F cos(ωt)ż_f + L cos(ωt)θ̇_f (W)
+    double Pd_bh;  // 垂荡兴波耗散 b_h ż_f² (W)
+    double Pd_bth; // 纵摇兴波耗散 b_θ θ̇_f² (W)
+    double Pl;     // 直线 PTO 耗散 c_l(ż_o−ż_f)² (W)
+    double Pth;    // 旋转 PTO 耗散 c_θ(θ̇_o−θ̇_f)² (W)
+};
+
 struct FullRec {
     std::vector<Sample> samples;
+    std::vector<EnergyRec> energy;
 };
 
 FullRec simulate(const Params& p, double rk_dt = 0.001) {
@@ -524,11 +569,12 @@ FullRec simulate(const Params& p, double rk_dt = 0.001) {
     double sample_dt = 0.2;
     long sample_interval = (long)std::lround(sample_dt / rk_dt);
 
-    double y[8] = {0};
+    double y[10] = {0};
     double t = 0.0;
 
     FullRec fr;
     fr.samples.push_back({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+    fr.energy.push_back({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
 
     long step = 0;
     while (t < t_max - rk_dt * 0.5) {
@@ -549,6 +595,23 @@ FullRec simulate(const Params& p, double rk_dt = 0.001) {
             s.Pl = C_L * dud * dud;
             s.Pth = C_THETA * dphid * dphid;
             fr.samples.push_back(s);
+
+            // 记录能量/耗散诊断（由状态直接算 E，由伴随状态取 W_in/W_diss）
+            double qd[4] = {y[4], y[5], y[6], y[7]};
+            double q[4]  = {y[0], y[1], y[2], y[3]};
+            EnergyRec e;
+            e.t = ts;
+            e.Tk = kinetic_energy(qd, M);
+            e.Vp = potential_energy(q, K);
+            e.E_dir = e.Tk + e.Vp;
+            e.W_in = y[8];
+            e.W_diss = y[9];
+            e.P_in = (p.F_amp * qd[0] + p.L_amp * qd[2]) * std::cos(p.omega * ts);
+            e.Pd_bh = p.b_h * qd[0] * qd[0];
+            e.Pd_bth = p.b_theta * qd[2] * qd[2];
+            e.Pl = C_L * (qd[1] - qd[0]) * (qd[1] - qd[0]);
+            e.Pth = C_THETA * (qd[3] - qd[2]) * (qd[3] - qd[2]);
+            fr.energy.push_back(e);
         }
     }
     return fr;
@@ -852,8 +915,8 @@ int main(int argc, char** argv) {
 
     // ======== 验证指标 2：静平衡零状态下初始加速度方向 ========
     {
-        double y0[8] = {0};
-        double dy0[8];
+        double y0[10] = {0};
+        double dy0[10];
         rhs(0.0, y0, dy0, p, Minv, C, K);
         std::cout << "\n====== 初始加速度方向核验（验证指标 2）======" << std::endl;
         std::cout << "ÿ(0) = (" << std::setprecision(6)
@@ -863,6 +926,54 @@ int main(int argc, char** argv) {
                   << (dy0[4] > 0 ? " → 方向正确" : " → 方向异常") << std::endl;
         std::cout << "  浮子纵摇角加速度=" << dy0[6] << " rad/s² (激励 L>0)"
                   << (dy0[6] > 0 ? " → 方向正确" : " → 方向异常") << std::endl;
+    }
+
+    // ======== L0 单元测试（PTO 内力/内力矩核验）========
+    {
+        std::cout << "\n====== L0 单元测试（PTO 内力/内力矩核验）======" << std::endl;
+        std::ofstream f(out_dir + "/result3_L0单元测试.csv", std::ios::binary);
+        put_bom(f);
+        f << "测试项,条件,观测值,期望,判定\n";
+
+        // 测试1：PTO 耦合项恰好等于 ±c_l / ±c_θ（关闭 PTO 即 c_l=c_θ=0 后耦合消失，仅剩兴波阻尼）
+        double c01 = C[0][1], c23 = C[2][3];
+        bool t1 = (std::fabs(c01 + C_L) < 1e-12) && (std::fabs(C[1][0] + C_L) < 1e-12)
+               && (std::fabs(c23 + C_THETA) < 1e-12) && (std::fabs(C[3][2] + C_THETA) < 1e-12);
+        f << "关闭PTO后阻尼矩阵PTO耦合项消失,C[0][1]=C[1][0]=" << c01
+          << "=-c_l,C[2][3]=C[3][2]=" << c23 << "=-c_θ,兴波阻尼b_h/b_θ仅在主对角,"
+          << (t1 ? "PASS" : "FAIL") << "\n";
+        std::cout << "测试1 关闭PTO后耦合项：C[0][1]=" << c01 << " C[2][3]=" << c23
+                  << " → " << (t1 ? "PASS" : "FAIL") << std::endl;
+
+        // 测试2：相对运动为零（z_o=z_f、θ_o=θ_f 且相对速度零）时，内部(PTO+弹簧)力/力矩/功率全零
+        double zz = 0.5, th = 0.3, vz = 1.0, vth = 0.7;  // 任意公共位移/角/速度
+        double ytest[4]  = {zz, zz, th, th};               // z_o=z_f, θ_o=θ_f
+        double ydtest[4] = {vz, vz, vth, vth};             // ż_o=ż_f, θ̇_o=θ̇_f
+        double Fd[4], Fs[4];
+        for (int i = 0; i < 4; ++i) {
+            Fd[i] = 0.0; Fs[i] = 0.0;
+            for (int j = 0; j < 4; ++j) { Fd[i] += C[i][j] * ydtest[j]; Fs[i] += K[i][j] * ytest[j]; }
+        }
+        double zero = 0.0;
+        auto upd = [&](double v) { double av = std::fabs(v); if (av > zero) zero = av; };
+        upd(Fd[0] - p.b_h * ydtest[0]);        // 浮子垂荡内部阻尼力 c_l(ż_f-ż_o)
+        upd(Fd[1]);                             // 振子垂荡内部阻尼力 c_l(ż_o-ż_f)
+        upd(Fd[2] - p.b_theta * ydtest[2]);    // 浮子纵摇内部阻尼力矩 c_θ(θ̇_f-θ̇_o)
+        upd(Fd[3]);                             // 振子纵摇内部阻尼力矩 c_θ(θ̇_o-θ̇_f)
+        upd(Fs[0] - p.Kh * ytest[0]);          // 浮子垂荡内部弹簧力 k(z_f-z_o)
+        upd(Fs[1]);                             // 振子垂荡内部弹簧力 k(z_o-z_f)
+        upd(Fs[2] - (p.K_theta - p.m_o * p.g * p.d) * ytest[2]); // 浮子纵摇内部弹簧力矩 k_θ(θ_f-θ_o)（减去静水+重力）
+        upd(Fs[3] + p.m_o * p.g * p.l_e * ytest[3]);              // 振子纵摇内部弹簧力矩 k_θ(θ_o-θ_f)（减去重力 -m_ogℓ_e θ_o）
+        upd(C_L * (ydtest[1] - ydtest[0]) * (ydtest[1] - ydtest[0]));       // P_l
+        upd(C_THETA * (ydtest[3] - ydtest[2]) * (ydtest[3] - ydtest[2]));   // P_θ
+        bool t2 = (zero < 1e-9);
+        f << "相对运动为零时PTO/弹簧内力内力矩功率为零,max|内力/力矩/功率|=" << zero
+          << ",<1e-9," << (t2 ? "PASS" : "FAIL") << "\n";
+        std::cout << "测试2 相对运动为零时内力/力矩/功率 max=" << zero
+                  << " → " << (t2 ? "PASS" : "FAIL") << std::endl;
+
+        f.close();
+        std::cout << "已写入 " << out_dir << "/result3_L0单元测试.csv" << std::endl;
     }
 
     // ======== 正式积分 ========
@@ -1001,6 +1112,35 @@ int main(int argc, char** argv) {
         std::cout << "max|zo|=" << max_zo << " m  max|żo|=" << max_vo << " m/s" << std::endl;
         std::cout << "max|θo|=" << max_to << " rad  max|θ̇o|=" << max_wo << " rad/s" << std::endl;
         std::cout << "已写入 " << out_dir << "/result3_响应幅值摘要.csv" << std::endl;
+    }
+
+    // ======== 能量恒等式核验（继承 v1/v2 能量与耗散节，v2 式 Q3-18 线性版）========
+    {
+        std::ofstream f(out_dir + "/result3_能量恒等式.csv", std::ios::binary);
+        put_bom(f);
+        f << "时间t(s),动能T(J),势能V(J),机械能E(J),波浪输入功率Pin(W),"
+          << "垂荡兴波耗散bh_zdotf2(W),纵摇兴波耗散btheta_thetadotf2(W),"
+          << "直线PTO耗散Pl(W),旋转PTO耗散Ptheta(W),总耗散Pd(W),"
+          << "累计输入功Win(J),累计耗散Wdiss(J),能量残差E-(Win-Wdiss)(J)\n";
+        double max_rel = 0.0, max_abs = 0.0;
+        for (auto& e : fr.energy) {
+            double Pd = e.Pd_bh + e.Pd_bth + e.Pl + e.Pth;          // 总耗散功率
+            double resid = e.E_dir - (e.W_in - e.W_diss);           // 机械能 − (累计输入 − 累计耗散)
+            double scale = std::max(1.0, std::fabs(e.E_dir));
+            double rel = std::fabs(resid) / scale;
+            if (rel > max_rel) max_rel = rel;
+            if (std::fabs(resid) > max_abs) max_abs = std::fabs(resid);
+            f << std::setprecision(10) << e.t << "," << e.Tk << "," << e.Vp << ","
+              << e.E_dir << "," << e.P_in << "," << e.Pd_bh << "," << e.Pd_bth << ","
+              << e.Pl << "," << e.Pth << "," << Pd << ","
+              << e.W_in << "," << e.W_diss << "," << resid << "\n";
+        }
+        f.close();
+        std::cout << "\n====== 能量恒等式核验（v2 式 Q3-18 线性版）======" << std::endl;
+        std::cout << "max |E-(W_in-W_diss)| = " << std::setprecision(6) << max_abs << " J" << std::endl;
+        std::cout << "max 相对残差 = " << std::setprecision(6) << max_rel
+                  << " (阈值 1e-3)  " << (max_rel <= 1e-3 ? "→ 通过" : "→ 不通过") << std::endl;
+        std::cout << "已写入 " << out_dir << "/result3_能量恒等式.csv" << std::endl;
     }
 
     std::cout << "\n======== Q3 v3 求解完成 ========" << std::endl;
