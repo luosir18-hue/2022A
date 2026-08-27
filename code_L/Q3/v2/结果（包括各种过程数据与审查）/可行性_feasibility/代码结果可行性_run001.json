@@ -1,0 +1,126 @@
+{
+  "report_kind": "code-result-feasibility",
+  "audit_kind": "execution-output-feasibility",
+  "schema_version": "zs-math-model-feasibility/v1",
+  "generated_at": "2026-08-27T00:00:00+00:00",
+  "project_root": "/home/z/桌面/文件/数模/practice/2022A",
+  "question": "Q3",
+  "member": "L",
+  "version": "v2",
+  "run_id": "run001",
+  "conclusion_boundary": "本报告只证明运行进程、输出契约、非空/有限值与计数等事实层检查通过，不宣称模型满足题目数学约束（约束语义由独立审查器判定）。",
+  "constraint_semantic_claim": "deferred_to_independent_review",
+  "process_status": {
+    "status": "pass",
+    "executable": "code_L/Q3/v2/solve.cpp",
+    "stderr_empty": true,
+    "stdout_log": "code_L/Q3/v2/结果（包括各种过程数据与审查）/运行输出/run001/stdout.log",
+    "exit_code": 0,
+    "note": "求解器正常完成 0~40 波浪周期（牛顿—欧拉线性常系数系统 M·ÿ+C·ẏ+K·y=f(t)，RK4 步长0.001s）积分，无报错、无异常退出。"
+  },
+  "output_contract": {
+    "required_submission_table": "result3.xlsx (八状态量：zf, zo, θf, θo 及速度，0.2s 采样)",
+    "submission_table_present": true,
+    "submission_table_path": "code_L/Q3/v2/结果（包括各种过程数据与审查）/运行输出/run001/result3.xlsx",
+    "auxiliary_tables_present": [
+      "result3.csv",
+      "result3_key.csv",
+      "result3_矩阵特性.csv",
+      "result3_几何约束检查.csv",
+      "result3_线性化适用性.csv",
+      "result3_响应幅值摘要.csv"
+    ],
+    "reject_nonfinite": true,
+    "all_columns_finite": true,
+    "allow_empty": false
+  },
+  "non_empty_finite_check": {
+    "status": "pass",
+    "result3_row_count": 733,
+    "result3_column_count": 9,
+    "nonfinite_cells": 0,
+    "empty_tables": 0,
+    "note": "主结果表 733 行 × 9 列（含表头 734 行文件），无 NaN/Inf；所有辅助表非空。"
+  },
+  "counts": {
+    "output_time_points": 733,
+    "sampling_interval_s": 0.2,
+    "expected_points_from_tmax": "t_max=146.5295 s, n=0..732 → 733 点",
+    "n_columns_submission": 9,
+    "n_auxiliary_tables": 6,
+    "status": "pass"
+  },
+  "run_facts": {
+    "integration": {
+      "t_max_s": 146.5295081,
+      "period_T_s": 3.663237702,
+      "n_periods": 40,
+      "output_points": 733
+    },
+    "locked_constants_verified": {
+      "omega_s_inv": 1.7152,
+      "F_N": 3640,
+      "L_Nm": 1690,
+      "m_f": 4866,
+      "m_o": 2433,
+      "m_a": 1028.876,
+      "J_a": 7001.914,
+      "I_f": 8398.7761,
+      "I_o": 202.75,
+      "K_theta": 8890.7,
+      "k_theta": 250000,
+      "K_h": 31557.2982,
+      "b_h": 683.4558,
+      "b_theta": 654.3383,
+      "d": -1.4079252,
+      "ell_e": 0.4519575,
+      "c_l": 10000,
+      "c_theta": 1000,
+      "status": "pass"
+    },
+    "feasibility_facts": {
+      "matrix_min_eig": {
+        "M_h": 2433,
+        "M_p": 577.72554881,
+        "C_h": 335.89070576,
+        "C_p": 275.009631338,
+        "K_h": 14237.458484,
+        "K_p": 14429.0340031
+      },
+      "mass_matrix_positive_definite": true,
+      "damping_matrix_semi_positive_definite": true,
+      "stiffness_matrix_positive_definite": true,
+      "u_min_m": -0.087034,
+      "u_max_m": 0.086242,
+      "u_lower_bound_m": -0.2019575,
+      "u_within_bound": true,
+      "max_abs_theta_rad": 0.153723492517,
+      "max_u_over_ell_e": 0.192571410444,
+      "linearization_applicable": true
+    },
+    "response_amplitude_max_abs": {
+      "zf_m": 0.8310922652,
+      "dzf_dt_m_s": 1.476879055,
+      "thetaf_rad": 0.1482619284,
+      "dthetaf_dt_rad_s": 0.2286925695,
+      "zo_m": 0.915018015,
+      "dzo_dt_m_s": 1.632372362,
+      "thetao_rad": 0.1537234925,
+      "dthetao_dt_rad_s": 0.2370364492
+    },
+    "pto_power_max": {
+      "P_l_W": 241.782,
+      "P_theta_W": 0.06962
+    }
+  },
+  "source_files": [
+    {"label": "solve_cpp", "path": "code_L/Q3/v2/solve.cpp", "sha256": "298e5580e2a3a6f2", "exists": true},
+    {"label": "result3", "path": "code_L/Q3/v2/结果（包括各种过程数据与审查）/运行输出/run001/result3.csv", "sha256": "01c9071f2e07e921", "exists": true},
+    {"label": "result3_xlsx", "path": "code_L/Q3/v2/结果（包括各种过程数据与审查）/运行输出/run001/result3.xlsx", "sha256": "571fd4e471675023", "exists": true},
+    {"label": "result3_key", "path": "code_L/Q3/v2/结果（包括各种过程数据与审查）/运行输出/run001/result3_key.csv", "sha256": "2dbffa4ef8af5ccc", "exists": true}
+  ],
+  "ignored_inputs": ["algorithm_semantics", "code_logic", "model_constraint_satisfaction"],
+  "warnings": [],
+  "errors": [],
+  "feasibility_verdict": "process_and_output_contract_pass"
+}

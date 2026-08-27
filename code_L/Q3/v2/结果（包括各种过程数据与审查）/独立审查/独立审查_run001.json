@@ -1,0 +1,173 @@
+{
+  "report_kind": "independent-review",
+  "audit_kind": "independent-feasibility",
+  "schema_version": "zs-math-model-feasibility/v1",
+  "generated_at": "2026-08-27T00:00:00+00:00",
+  "project_root": "/home/z/桌面/文件/数模/practice/2022A",
+  "question": "Q3",
+  "member": "L",
+  "version": "v2",
+  "run_id": "run001",
+  "semantic_status": "human_required",
+  "reviewed_by": "",
+  "review_note": "自然语言/公式约束的语义满足性需要人工或独立模型审阅；本工具不代替该判断。证据层已列出硬约束与软约束的事实观测值，但最终'满足约束/可行'的论文表述需人工签署后方可生效。本版对应模型/Q3/v3 牛顿—欧拉线性模型 L1。",
+  "source_files": [
+    {"label": "problem_source", "path": "题目信息/题目重述_problem_brief.md", "relative_path": "题目信息/题目重述_problem_brief.md", "exists": false, "sha256": ""},
+    {"label": "数学模型.md", "path": "模型/Q3/v3/数学模型.md", "relative_path": "模型/Q3/v3/数学模型.md", "exists": true, "sha256": "61e56dff8805c0f9"},
+    {"label": "建模思路.md", "path": "模型/Q3/v3/建模思路.md", "relative_path": "模型/Q3/v3/建模思路.md", "exists": true, "sha256": "a204dc03f8aaf83a"},
+    {"label": "约束.md", "path": "模型/Q3/v3/约束.md", "relative_path": "模型/Q3/v3/约束.md", "exists": true, "sha256": "e611b95ce906380b"}
+  ],
+  "problem_source_kind": "summary",
+  "ignored_inputs": ["algorithm", "code", "solve.py", "solve.cpp", "伪代码.md"],
+  "checks": [
+    {"name": "source:数学模型.md", "status": "pass", "path": "模型/Q3/v3/数学模型.md"},
+    {"name": "source:建模思路.md", "status": "pass", "path": "模型/Q3/v3/建模思路.md"},
+    {"name": "source:约束.md", "status": "pass", "path": "模型/Q3/v3/约束.md"},
+    {"name": "source:problem_source", "status": "fail", "path": "题目信息/题目重述_problem_brief.md"},
+    {"name": "result_outputs_present", "status": "pass", "files": [
+      "result3.csv", "result3.xlsx", "result3_key.csv",
+      "result3_矩阵特性.csv", "result3_几何约束检查.csv",
+      "result3_线性化适用性.csv", "result3_响应幅值摘要.csv"
+    ]},
+    {"name": "hard_constraint_section", "status": "pass", "constraint_markers": [
+      "## 硬约束", "## 软约束", "## 边界与可行域"
+    ]}
+  ],
+  "warnings": [
+    "problem_source (题目重述_problem_brief.md) 不存在，独立审查的题目来源回退为题目原文/已重述内容，未纳入哈希证据链。"
+  ],
+  "constraint_evidence": [
+    {
+      "constraint_id": "C-Q3-H1",
+      "condition": "浮子结构惯量 I_f、附加转动惯量 J_a、静水恢复系数 K_θ 与激励力矩 L 必须对应同一条纵摇参考轴；参考轴未确认前不得单独平移其中一项",
+      "scope": "纵摇参考轴一致性",
+      "threshold": "structural",
+      "unit": "-",
+      "observed_value": "模型 Q3/v3 四自由度状态 (z_f, z_o, θ_f, θ_o) 统一以浮子质心横轴为纵摇参考轴，I_f/J_a/K_θ/L 均取该轴",
+      "status": "PASS",
+      "evidence_path": "模型/Q3/v3/数学模型.md"
+    },
+    {
+      "constraint_id": "C-Q3-H2",
+      "condition": "外载荷取 F cos(ωt) 和 L cos(ωt)，ω=1.7152 s⁻¹、F=3640 N、L=1690 N·m",
+      "scope": "激励项",
+      "threshold": "exact_match",
+      "unit": "s⁻¹/N/N·m",
+      "observed_value": "ω=1.7152, F=3640, L=1690；激励向量 f(t)=(F cosωt, 0, L cosωt, 0)",
+      "status": "PASS",
+      "evidence_path": "模型/Q3/v3/数学模型.md"
+    },
+    {
+      "constraint_id": "C-Q3-H3",
+      "condition": "PTO 参数固定 c_l=10000 N·s/m、c_θ=1000 N·m·s/rad；直线元件只依赖 z_o-z_f，旋转元件只依赖 θ_o-θ_f",
+      "scope": "PTO 阻尼耦合项",
+      "threshold": "structural",
+      "unit": "N·s/m, N·m·s/rad",
+      "observed_value": "c_l=10000, c_θ=1000；几何约束检查表中相对位移 u=z_o-z_f 全程在 ±0.087 m 内，验证直线元件仅经 u 进入",
+      "status": "PASS",
+      "evidence_path": "模型/Q3/v3/数学模型.md, 运行输出/run001/result3_几何约束检查.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H4",
+      "condition": "所有状态从静平衡位置计量，初始位移和初始速度均为零；垂荡方程不得再次加入未平衡的常量重力项",
+      "scope": "t=0 状态与重力平衡",
+      "threshold": "all_zero",
+      "unit": "-",
+      "observed_value": "result3.csv t=0 行 z_f=θ_f=z_o=θ_o=0 且四速度全为0；线性化已在静平衡点展开，无残留重力常量项",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H5",
+      "condition": "连接力和连接力矩满足作用—反作用；整体平衡中内部弹簧和阻尼项必须相消",
+      "scope": "浮子—振子相互作用",
+      "threshold": "structural",
+      "unit": "-",
+      "observed_value": "模型以 (z_o-z_f, θ_o-θ_f) 相对坐标构造弹簧/阻尼，连接力成对出现、整体求和相消",
+      "status": "PASS",
+      "evidence_path": "模型/Q3/v3/数学模型.md"
+    },
+    {
+      "constraint_id": "C-Q3-H6",
+      "condition": "振子几何必须满足 z_o-z_f > -0.2019575 m",
+      "scope": "全程 t∈[0,t_max]",
+      "threshold": "u_min > -0.2019575",
+      "unit": "m",
+      "observed_value": "u_min=-0.087034 m (> -0.2019575)；u_max=0.086242 m",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3_几何约束检查.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H7",
+      "condition": "附件未提供的垂荡—纵摇交叉水动力项取零，不以经验值补填",
+      "scope": "水动力耦合项",
+      "threshold": "structural",
+      "unit": "-",
+      "observed_value": "质量矩阵 M、阻尼矩阵 C 均为 2×2 块对角，无交叉水动力非零项",
+      "status": "PASS",
+      "evidence_path": "模型/Q3/v3/数学模型.md, 运行输出/run001/result3_矩阵特性.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H8",
+      "condition": "0.2 s 仅为输出间隔，不作为模型方程的一部分",
+      "scope": "输出时刻网格",
+      "threshold": "733_points",
+      "unit": "s",
+      "observed_value": "t_max=146.5295 s，输出点数=733（含t=0），间隔0.2s；RK4 方程步长独立取0.001s",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3.csv"
+    },
+    {
+      "constraint_id": "C-Q3-H9",
+      "condition": "动力学可行性：质量矩阵正定、阻尼矩阵半正定、线性化刚度矩阵正定",
+      "scope": "六矩阵块最小特征值",
+      "threshold": "M>0, C≥0, K>0",
+      "unit": "-",
+      "observed_value": "min_eig(M_h)=2433, min_eig(M_p)=577.7255, min_eig(C_h)=335.8907, min_eig(C_p)=275.0096, min_eig(K_h)=14237.4585, min_eig(K_p)=14429.0340",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3_矩阵特性.csv"
+    },
+    {
+      "constraint_id": "S-Q3-S1",
+      "condition": "建议保持 max(|θ_f|,|θ_o|) ≤ 0.20 rad；越界时必须与 L2 非线性模型比较",
+      "scope": "纵摇幅值",
+      "threshold": "0.20",
+      "unit": "rad",
+      "observed_value": "max|θ_f|=0.148262 rad, max|θ_o|=0.153723 rad（均 ≤ 0.20，未越界）",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3_响应幅值摘要.csv, result3_线性化适用性.csv"
+    },
+    {
+      "constraint_id": "S-Q3-S2",
+      "condition": "建议保持 max|z_o-z_f|/ℓ_e ≤ 0.20；明显越界时线性化变长度惯量近似需复核",
+      "scope": "相对位移线性化适用域",
+      "threshold": "0.20",
+      "unit": "-",
+      "observed_value": "max|u|/ℓ_e=0.192571（≤ 0.20，但已逼近阈值；线性化处于适用边界，建议参数扰动下复核）",
+      "status": "PASS",
+      "evidence_path": "运行输出/run001/result3_线性化适用性.csv"
+    },
+    {
+      "constraint_id": "S-Q3-S3",
+      "condition": "I_f=8398.7761 kg·m² 与 d=-1.4079252 m 来自统一壳面密度解释，是待核实输入，不是不可更改的物理真值",
+      "scope": "输入参数可信度",
+      "threshold": "to_be_verified",
+      "unit": "-",
+      "observed_value": "已按约束.md 标注为待核实输入；本版沿用该数值，未改动",
+      "status": "NOT_CHECKED",
+      "evidence_path": "模型/Q3/v3/约束.md"
+    },
+    {
+      "constraint_id": "S-Q3-S4",
+      "condition": "若 L1 与 L2 在题面输出时刻关键响应差异不超过 5%，正式表达优先用 L1；若超过 5% 再依据误差来源决定是否升级",
+      "scope": "L1(本版) vs L2(模型Q3/v2 非线性) 关键响应对照",
+      "threshold": "abs_diff <= 5%",
+      "unit": "%",
+      "observed_value": "需显式重跑 L2(模型Q3/v2) 并在5个题面时刻(t=10/20/40/60/100s)与 L1 关键响应逐项比对，方可判定；本审计未执行该跨模型对照",
+      "status": "NOT_CHECKED",
+      "evidence_path": "模型/Q3/v2（非线性）/ code_L/Q3/v1 运行输出（待比对）"
+    }
+  ],
+  "errors": [],
+  "conclusion_boundary": "本报告只证明审计输入与证据结构齐全，不证明模型结论或约束语义自动成立；'满足约束/可行'的论文表述需人工或独立审阅签署（reviewed_by 非空且 semantic_status=passed）后方可写入。"
+}
